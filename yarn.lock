@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@authkitcom/core@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@authkitcom/core/-/core-0.12.0.tgz#197680eeb8a1248c5b3bf189f2a4144a6759371a"
-  integrity sha512-l09jUwxPnr5V6TpSeFdLJ/FnJQh3YCugNRBm4/65NjZelIqy6YvYfc+0QDec2FGxaQGUKcuowI+kYOCfTDs7JQ==
+"@authkitcom/core@^0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@authkitcom/core/-/core-0.12.1.tgz#b65956e698473cd6ccfb4dec23cb20ef37062c0b"
+  integrity sha512-3b/zvV7tNpvrvX2cUefYvUY7bTOG8oIXzt4OKbbzSN+hyQBhe6kXJY0PD7X7WMNSxXJ8r+cgUyD8YQBg/oaawA==
   dependencies:
     "@types/crypto-js" "^3.1.43"
     "@types/randombytes" "^2.0.0"
