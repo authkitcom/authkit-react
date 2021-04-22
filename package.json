@@ -1,7 +1,7 @@
 {
   "name": "@authkitcom/react",
   "private": false,
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "AuthKit React Component",
   "author": "btomasini",
   "license": "MIT",
