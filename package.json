@@ -1,10 +1,14 @@
 {
   "name": "@authkitcom/react",
+  "private": false,
   "version": "0.8.2",
   "description": "AuthKit React Component",
   "author": "btomasini",
   "license": "MIT",
-  "repository": "authkitcom/authkit-react",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:authkitcom/authkit-react.git"
+  },
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
