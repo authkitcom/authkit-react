@@ -30,8 +30,8 @@ describe('<AuthKitProvider/>', () => {
   let wrapper: ReactWrapper
 
   const mockAuthKit = {
-    getTokens: jest.fn(),
     authorize: jest.fn(),
+    getTokens: jest.fn(),
   }
 
   beforeEach(async () => {

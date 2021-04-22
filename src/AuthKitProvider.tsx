@@ -1,4 +1,4 @@
-import { createAuthKit, ICreateParams, IAuthKit } from '@authkitcom/core';
+import { createAuthKit, IAuthKit, ICreateParams } from '@authkitcom/core';
 import * as React from 'react';
 import { getAuthKitContext } from './AuthKitContext';
 
