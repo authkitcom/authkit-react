@@ -1,36 +1,35 @@
-import { create, IParams, ISecure } from '@authlogic/core';
+import { createAuthKit, ICreateParams, IAuthKit } from '@authkitcom/core';
 import * as React from 'react';
-import { getAuthLogicContext } from './AuthLogicContext';
+import { getAuthKitContext } from './AuthKitContext';
 
 export interface IErrorProps {
   error: Error
 }
 
-export interface IAuthLogicProviderProps {
+export interface IAuthKitProviderProps {
   children: React.ReactNode | React.ReactNode[] | null;
   errorNode?: (props: IErrorProps) => JSX.Element;
   loadingNode?: React.ReactNode | null;
-  params: IParams;
+  createParams: ICreateParams;
 }
 
-interface IAuthLogicState {
+interface IAuthKitState {
   error?: Error
-  secure?: ISecure
+  authKit?: IAuthKit
 }
 
-export const AuthLogicProvider = (props: IAuthLogicProviderProps) => {
+export const AuthKitProvider = (props: IAuthKitProviderProps) => {
 
-  const [state, setState] = React.useState<IAuthLogicState>({})
-  const { params, children } = props
+  const [state, setState] = React.useState<IAuthKitState>({})
+  const { createParams, children } = props
 
   const loadSecure = async () => {
     // TODO We can combine these back into one if we want
-    const secure = create()
-    secure.init(params)
+    const authKit = createAuthKit(createParams)
     try {
-      await secure.secure()
+      await authKit.authorize()
       setState({
-        secure
+        authKit
       })
     } catch (e) {
       setState({
@@ -50,12 +49,12 @@ export const AuthLogicProvider = (props: IAuthLogicProviderProps) => {
     } else {
       return (<p>Error: {state.error.message}</p>)
     }
-  } else if (state.secure && state.secure.getAuthentication()) {
-    const AuthLogicContext = getAuthLogicContext()
+  } else if (state.authKit && state.authKit!.getTokens()) {
+    const AuthKitContext = getAuthKitContext()
     return (
-      <AuthLogicContext.Provider value={{ secure: state.secure }}>
+      <AuthKitContext.Provider value={{ authKit: state.authKit }}>
         {children}
-      </AuthLogicContext.Provider>
+      </AuthKitContext.Provider>
     );
   } else {
     if (props.loadingNode) {

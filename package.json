@@ -1,10 +1,10 @@
 {
-  "name": "@authlogic/react",
+  "name": "@authkitcom/react",
   "version": "0.8.2",
-  "description": "Authlogic React Component",
+  "description": "AuthKit React Component",
   "author": "btomasini",
   "license": "MIT",
-  "repository": "btomasini/authlogic-react",
+  "repository": "authkitcom/authkit-react",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
@@ -26,7 +26,7 @@
     "lint": "tslint -p tsconfig.json"
   },
   "dependencies": {
-    "@authlogic/core": "^0.9.5",
+    "@authkitcom/core": "^0.12.0",
     "ts-invariant": "^0.4.4"
   },
   "peerDependencies": {
