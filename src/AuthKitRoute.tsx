@@ -1,10 +1,8 @@
 import * as React from 'react';
-import useAuthKit from './hooks/useAuthkit';
+import { useAuthKit } from './hooks/useAuthKit';
 
-const AuthKitRoute = ({ children }: { children: React.ReactChild }) => {
+export const AuthKitRoute = ({ children }: { children: React.ReactChild }) => {
   const { isAuthenticated } = useAuthKit({ required: true });
 
-  return <div>{isAuthenticated() && children}</div>;
+  return <React.Fragment>{isAuthenticated() && children}</React.Fragment>;
 };
-
-export default AuthKitRoute;

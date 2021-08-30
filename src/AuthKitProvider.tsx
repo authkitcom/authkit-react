@@ -51,7 +51,7 @@ export const AuthKitProvider = (props: IAuthKitProviderProps) => {
     } else {
       return <p>Error: {state.error.message}</p>;
     }
-  } else if (state.authKit && state.authKit!.getTokens()) {
+  } else if (state.authKit && (state.authKit!.getTokens() || !props.required)) {
     const AuthKitContext = getAuthKitContext();
     return <AuthKitContext.Provider value={{ authKit: state.authKit }}>{children}</AuthKitContext.Provider>;
   } else {

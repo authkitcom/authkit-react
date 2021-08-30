@@ -1,18 +1,19 @@
 import * as React from 'react';
+import { IAuthKit } from '../../../authkit-javascript/lib';
 import { getAuthKitContext, IAuthKitContextValue } from '../AuthKitContext';
 
 interface IAuthKitHook {
   required: boolean;
 }
 
-const useAuthKit = ({ required }: IAuthKitHook) => {
+export const useAuthKit = ({ required }: IAuthKitHook): { authKit: IAuthKit; isAuthenticated(): boolean } => {
   const { authKit } = React.useContext<IAuthKitContextValue>(getAuthKitContext());
 
   const isAuthenticated = (): boolean => (authKit?.getUserinfo()?.sub ? true : false);
 
   React.useEffect(() => {
     if (authKit) {
-      if (required && !isAuthenticated) {
+      if (required && !isAuthenticated()) {
         authKit.redirect();
       }
     } else {
@@ -20,7 +21,5 @@ const useAuthKit = ({ required }: IAuthKitHook) => {
     }
   }, []);
 
-  return { ...authKit!, isAuthenticated };
+  return { authKit: authKit!, isAuthenticated };
 };
-
-export default useAuthKit;
