@@ -30,7 +30,7 @@
     "lint": "tslint -p tsconfig.json"
   },
   "dependencies": {
-    "@authkitcom/core": "^0.12.1",
+    "@authkitcom/core": "file:../authkit-javascript",
     "ts-invariant": "^0.4.4"
   },
   "peerDependencies": {
