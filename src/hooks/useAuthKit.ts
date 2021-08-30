@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IAuthKit } from '../../../authkit-javascript/lib';
+import { IAuthKit } from '@authkitcom/core';
 import { getAuthKitContext, IAuthKitContextValue } from '../AuthKitContext';
 
 interface IAuthKitHook {
