@@ -25,25 +25,34 @@ export const AuthKitProvider = (props: IAuthKitProviderProps) => {
 
   const loadSecure = async () => {
     // TODO We can combine these back into one if we want
-    const authKit = createAuthKit(createParams);
-    if (props.required) {
-      authKit.setRequired();
-    }
-    try {
-      await authKit.authorize();
-      setState({
-        authKit,
-      });
-    } catch (e) {
-      setState({
-        error: e,
-      });
+    if (state.authKit && props.required) {
+      try {
+        await state.authKit.authorize();
+      } catch (e) {
+        setState({
+          error: e,
+        });
+      }
     }
   };
 
+  const initAuthkit = () => {
+    const authKit = createAuthKit(createParams);
+
+    setState({
+      authKit,
+    });
+  };
+
   React.useEffect(() => {
-    loadSecure();
+    initAuthkit();
   }, []);
+
+  React.useEffect(() => {
+    if (state.authKit) {
+      (async () => await loadSecure())();
+    }
+  }, [state]);
 
   if (state.error) {
     if (props.errorNode) {

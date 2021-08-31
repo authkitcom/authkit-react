@@ -3,23 +3,29 @@ import * as React from 'react';
 import { getAuthKitContext, IAuthKitContextValue } from '../AuthKitContext';
 
 interface IAuthKitHook {
-  required: boolean;
+  required?: boolean;
 }
 
-export const useAuthKit = ({ required }: IAuthKitHook): { authKit: IAuthKit; isAuthenticated(): boolean } => {
+export const useAuthKit = (props?: IAuthKitHook): { authKit: IAuthKit; isAuthenticated: boolean } => {
   const { authKit } = React.useContext<IAuthKitContextValue>(getAuthKitContext());
-
-  const isAuthenticated = (): boolean => (authKit?.getUserinfo()?.sub ? true : false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(authKit?.getTokens() ? true : false);
 
   React.useEffect(() => {
-    if (authKit) {
-      if (required && !isAuthenticated()) {
-        authKit.redirect();
+    (async () => {
+      if (authKit) {
+        if (props?.required && !isAuthenticated) {
+          try {
+            await authKit.authorize();
+            setIsAuthenticated(true);
+          } catch (e) {
+            throw new Error(e);
+          }
+        }
+      } else {
+        throw new Error('Make sure the AuthKit hook is only used in children of the AuthKit provider.');
       }
-    } else {
-      throw new Error('Make sure the AuthKit hook is only used in children of the AuthKit provider.');
-    }
-  }, []);
+    })();
+  }, [isAuthenticated]);
 
   return { authKit: authKit!, isAuthenticated };
 };
