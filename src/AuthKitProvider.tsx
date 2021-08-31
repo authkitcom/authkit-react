@@ -7,6 +7,7 @@ export interface IErrorProps {
 }
 
 export interface IAuthKitProviderProps {
+  authorize?: boolean;
   children: React.ReactNode | React.ReactNode[] | null;
   errorNode?: (props: IErrorProps) => JSX.Element;
   loadingNode?: React.ReactNode | null;
@@ -27,7 +28,9 @@ export const AuthKitProvider = (props: IAuthKitProviderProps) => {
     // TODO We can combine these back into one if we want
     const authKit = createAuthKit(createParams)
     try {
-      await authKit.authorize()
+      if (props.authorize) {
+        await authKit.authorize()
+      }
       setState({
         authKit
       })
