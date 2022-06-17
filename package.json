@@ -1,7 +1,7 @@
 {
   "name": "@authkitcom/react",
   "private": false,
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "AuthKit React Component",
   "author": "btomasini",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "lint": "tslint -p tsconfig.json"
   },
   "dependencies": {
-    "@authkitcom/core": "^0.13.10",
+    "@authkitcom/core": "^0.13.11",
     "ts-invariant": "^0.4.4"
   },
   "peerDependencies": {
