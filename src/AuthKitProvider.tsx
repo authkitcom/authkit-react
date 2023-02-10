@@ -1,6 +1,7 @@
-import { createAuthKit, IAuthKit, ICreateParams } from '@authkitcom/core';
+import {createAuthKitForDOM, IAuthentication, IAuthKit, ICreateParams} from '@authkitcom/core';
 import * as React from 'react';
 import { getAuthKitContext } from './AuthKitContext';
+import {Optional} from "./Lang";
 
 export interface IErrorProps {
   error: Error;
@@ -16,6 +17,7 @@ export interface IAuthKitProviderProps {
 
 interface IAuthKitState {
   error?: Error;
+  authentication?: IAuthentication;
   authKit?: IAuthKit;
 }
 
@@ -24,14 +26,15 @@ export const AuthKitProvider = (props: IAuthKitProviderProps) => {
   const { createParams, children } = props;
 
   const loadSecure = async () => {
-    // TODO We can combine these back into one if we want
-    const authKit = createAuthKit(createParams);
+    const authKit = createAuthKitForDOM(createParams);
     try {
+      let authentication: Optional<IAuthentication>;
       if (props.authorize) {
-        await authKit.authorize();
+        authentication = await authKit.authorize();
       }
       setState({
         authKit,
+        authentication
       });
     } catch (e) {
       setState({
@@ -41,7 +44,9 @@ export const AuthKitProvider = (props: IAuthKitProviderProps) => {
   };
 
   React.useEffect(() => {
-    loadSecure();
+    (async () => {
+      await loadSecure();
+    })();
   }, []);
 
   if (state.error) {
@@ -50,9 +55,9 @@ export const AuthKitProvider = (props: IAuthKitProviderProps) => {
     } else {
       return <p>Error: {state.error.message}</p>;
     }
-  } else if (state.authKit && (state.authKit!.getTokens() || !props.authorize)) {
+  } else if (state.authKit && (state.authentication?.getTokens() || !props.authorize)) {
     const AuthKitContext = getAuthKitContext();
-    return <AuthKitContext.Provider value={{ authKit: state.authKit }}>{children}</AuthKitContext.Provider>;
+    return <AuthKitContext.Provider value={{ authKit: state.authKit, authentication: state.authentication }}>{children}</AuthKitContext.Provider>;
   } else {
     if (props.loadingNode) {
       return <div>{props.loadingNode}</div>;

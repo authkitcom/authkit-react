@@ -5,7 +5,7 @@ stdenv.mkDerivation {
   name = "authlogic-core";
 
   buildInputs = with pkgs; [
-    nodejs-14_x
+    nodejs-16_x
     nodePackages.yarn
   ];
 

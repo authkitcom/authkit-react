@@ -1,20 +1,15 @@
-import { Tokens } from '@authkitcom/core';
-import { configure } from 'enzyme';
-import { mount, ReactWrapper } from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16';
+import {ITokens} from '@authkitcom/core';
+import {render, screen} from "@testing-library/react";
 import * as React from 'react'
-const mockCreateAuthKit = jest.fn()
-jest.mock('@authkitcom/core', () => ({
-  createAuthKit: mockCreateAuthKit
-}))
 import { AuthKitProvider } from '../AuthKitProvider'
-import { getTokens } from '../getTokens';
 
-configure({ adapter: new Adapter() });
+const mockCreateAuthKitForDom = jest.fn()
+jest.mock('@authkitcom/core', () => ({
+  createAuthKitForDOM: mockCreateAuthKitForDom
+}))
 
 const StubConsumer: React.FC = () => {
-  const tokens = getTokens()
-  return (<p>{tokens!.expiresIn}</p>)
+  return (<p>test</p>)
 }
 
 beforeEach(() => {
@@ -27,11 +22,9 @@ describe('<AuthKitProvider/>', () => {
   const clientId = 'test-client-id'
   const scope = ['test-scope']
 
-  let wrapper: ReactWrapper
 
   const mockAuthKit = {
     authorize: jest.fn(),
-    getTokens: jest.fn(),
   }
 
   beforeEach(async () => {
@@ -42,20 +35,20 @@ describe('<AuthKitProvider/>', () => {
       scope,
     }
 
-    mockCreateAuthKit.mockImplementation(() => mockAuthKit)
-
-    const tokens: Tokens = {
+    const tokens: ITokens = {
       expiresIn: 1000
     }
 
-    mockAuthKit.getTokens.mockReturnValue(tokens)
+    mockCreateAuthKitForDom.mockImplementation(() => mockAuthKit).mockReturnValue(tokens)
 
-    wrapper = mount(<AuthKitProvider createParams={createParams}><StubConsumer /></AuthKitProvider>)
+
+
+    render(<AuthKitProvider createParams={createParams}><StubConsumer /></AuthKitProvider>)
 
   })
 
   // TODO - Figure out how to test the actual authorize call
   it('renders something', () => {
-    expect(wrapper.find('p').first().text()).toBe('Loading...')
+    expect(screen.getByRole('p').textContent).toBe(('Loading...'));
   })
 })

@@ -1,18 +1,20 @@
-import { IAuthKit } from '@authkitcom/core';
+import {IAuthentication, IAuthKit} from '@authkitcom/core'
 import * as React from 'react';
 import { Optional } from './Lang';
 
 export interface IAuthKitContextValue {
-  authKit: Optional<IAuthKit>
+  authKit: Optional<IAuthKit>,
+  authentication: Optional<IAuthentication>
 }
 
-let authLogicContext: React.Context<IAuthKitContextValue>
+let authKitContext: React.Context<IAuthKitContextValue>
 
 export function getAuthKitContext(): React.Context<IAuthKitContextValue> {
-  if (!authLogicContext) {
-    authLogicContext = React.createContext<IAuthKitContextValue>({
-      authKit: undefined
+  if (!authKitContext) {
+    authKitContext = React.createContext<IAuthKitContextValue>({
+      authKit: undefined,
+      authentication: undefined
     })
   }
-  return authLogicContext
+  return authKitContext
 }
