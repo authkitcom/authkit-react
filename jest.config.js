@@ -4,6 +4,7 @@ module.exports = {
   transform: {
     "^.+\\.[t|j]sx?$": "ts-jest"
   },
+  modulePaths: ["<rootdir>"],
   moduleDirectories: [
     "node_modules",
     "src"

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import * as React from "react";
 import { getAuthKitContext } from '../AuthKitContext';
 
-export const useAuthKit = () => useContext(getAuthKitContext());
+export const useAuthKit = () => React.useContext(getAuthKitContext());

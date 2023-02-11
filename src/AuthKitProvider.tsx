@@ -1,7 +1,7 @@
-import {createAuthKitForDOM, IAuthentication, IAuthKit, ICreateParams} from '@authkitcom/core';
-import * as React from 'react';
+import * as React from "react";
 import { getAuthKitContext } from './AuthKitContext';
 import {Optional} from "./Lang";
+import {createAuthKitForDOM, IAuthentication, IAuthKit, ICreateParams} from "@authkitcom/core";
 
 export interface IErrorProps {
   error: Error;
