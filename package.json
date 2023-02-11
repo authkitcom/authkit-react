@@ -29,9 +29,9 @@
     "lint": "tslint -p tsconfig.json"
   },
   "dependencies": {
-    "@authkitcom/core": "file:.yalc/@authkitcom/core",
-    "ts-invariant": "^0.10.3",
-    "react-scripts": "5.0.0"
+    "@authkitcom/core": "^1.0.0",
+    "react-scripts": "5.0.0",
+    "ts-invariant": "^0.10.3"
   },
   "peerDependencies": {
     "react": "^18.2.0",

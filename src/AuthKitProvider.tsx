@@ -13,6 +13,7 @@ export interface IAuthKitProviderProps {
   errorNode?: (props: IErrorProps) => JSX.Element;
   loadingNode?: React.ReactNode | null;
   createParams: ICreateParams;
+  scope: string[];
 }
 
 interface IAuthKitState {
@@ -23,14 +24,17 @@ interface IAuthKitState {
 
 export const AuthKitProvider = (props: IAuthKitProviderProps) => {
   const [state, setState] = React.useState<IAuthKitState>({});
-  const { createParams, children } = props;
+  const { createParams, children, scope } = props;
 
   const loadSecure = async () => {
     const authKit = createAuthKitForDOM(createParams);
     try {
       let authentication: Optional<IAuthentication>;
       if (props.authorize) {
-        authentication = await authKit.authorize();
+        authentication = await authKit.authorize({
+          scope: scope,
+          redirectUri: window.location.origin
+        });
       }
       setState({
         authKit,

@@ -43,7 +43,7 @@ describe('<AuthKitProvider/>', () => {
 
 
 
-    render(<AuthKitProvider createParams={createParams}><StubConsumer /></AuthKitProvider>)
+    render(<AuthKitProvider createParams={createParams} scope={[]}><StubConsumer /></AuthKitProvider>)
 
   })
 
