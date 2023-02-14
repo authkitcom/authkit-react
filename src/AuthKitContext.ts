@@ -1,10 +1,11 @@
-import {IAuthentication, IAuthKit} from '@authkitcom/core'
+import {IAuthentication, IAuthorizeParams} from '@authkitcom/core'
 import * as React from 'react';
-import { Optional } from './Lang';
 
+//TODO - loading states would be nice
 export interface IAuthKitContextValue {
-  authKit: Optional<IAuthKit>,
-  authentication: Optional<IAuthentication>
+  //authKit: Optional<IAuthKit>,
+  authorize?: (params?: IAuthorizeParams) => Promise<void>;
+  authentication?:IAuthentication;
 }
 
 let authKitContext: React.Context<IAuthKitContextValue>
@@ -12,7 +13,7 @@ let authKitContext: React.Context<IAuthKitContextValue>
 export function getAuthKitContext(): React.Context<IAuthKitContextValue> {
   if (!authKitContext) {
     authKitContext = React.createContext<IAuthKitContextValue>({
-      authKit: undefined,
+      authorize: undefined,
       authentication: undefined
     })
   }

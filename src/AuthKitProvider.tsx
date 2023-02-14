@@ -1,70 +1,107 @@
 import * as React from "react";
 import { getAuthKitContext } from './AuthKitContext';
-import {Optional} from "./Lang";
-import {createAuthKitForDOM, IAuthentication, IAuthKit, ICreateParams} from "@authkitcom/core";
+import {createAuthKitForDOM, IAuthentication, IAuthKit, IAuthorizeParams, ICreateParams} from "@authkitcom/core";
+import {useCallback} from "react";
 
 export interface IErrorProps {
   error: Error;
 }
 
+/**
+ * redirectUri will default to window.location.origin if not provided
+ */
+export interface IAuthKitReactCreateParams extends ICreateParams {
+  redirectUri?: string;
+}
+
 export interface IAuthKitProviderProps {
-  authorize?: boolean;
+  authorizeOnMount?: boolean;
   children: React.ReactNode | React.ReactNode[] | null;
   errorNode?: (props: IErrorProps) => JSX.Element;
   loadingNode?: React.ReactNode | null;
-  createParams: ICreateParams;
+  createParams: IAuthKitReactCreateParams;
   scope: string[];
 }
 
 interface IAuthKitState {
   error?: Error;
   authentication?: IAuthentication;
-  authKit?: IAuthKit;
 }
 
-export const AuthKitProvider = (props: IAuthKitProviderProps) => {
-  const [state, setState] = React.useState<IAuthKitState>({});
-  const { createParams, children, scope } = props;
+export const AuthKitProvider = ({
+                                  authorizeOnMount,
+                                  createParams,
+                                  children,
+                                  errorNode,
+                                  loadingNode,
+                                  scope}: IAuthKitProviderProps) => {
 
-  const loadSecure = async () => {
-    const authKit = createAuthKitForDOM(createParams);
+  const authKit = React.useRef<IAuthKit | null>(null);
+  if(authKit.current === null) {
+    authKit.current = createAuthKitForDOM(createParams);
+  }
+
+  const [state, setState] = React.useState<IAuthKitState>({});
+
+  const redirectUri = createParams.redirectUri ?? window.location.origin;
+
+  const defaultAuthorizeParams: IAuthorizeParams = {
+    scope,
+    redirectUri,
+    mode: "redirect",
+  };
+
+
+  const authorize = useCallback(async (params?: IAuthorizeParams): Promise<void> => {
     try {
-      let authentication: Optional<IAuthentication>;
-      if (props.authorize) {
-        authentication = await authKit.authorize({
-          scope: scope,
-          redirectUri: window.location.origin
-        });
+      const resp = await authKit.current?.authorize(params ?? defaultAuthorizeParams)
+      if(resp) {
+        setState((curState) => ({
+          ...curState,
+          authentication: resp,
+        }));
       }
+    } catch(e) {
       setState({
-        authKit,
-        authentication
-      });
+        error: e,
+      })
+    }
+  }, [authKit.current, defaultAuthorizeParams]);
+
+  const loadSecure = useCallback(async () => {
+    try {
+      const authorizeParams = defaultAuthorizeParams;
+      if(!authorizeOnMount) {
+        authorizeParams.mode = "silent";
+      }
+      await authorize(authorizeParams);
     } catch (e) {
       setState({
         error: e,
       });
     }
-  };
+  }, [authorize]);
 
   React.useEffect(() => {
-    (async () => {
-      await loadSecure();
-    })();
-  }, []);
+    if(authKit.current) {
+      (async () => {
+        await loadSecure();
+      })();
+    }
+  }, [authKit]);
 
   if (state.error) {
-    if (props.errorNode) {
-      return <props.errorNode error={state.error} />;
+    if (errorNode) {
+      return errorNode({error: state.error});
     } else {
       return <p>Error: {state.error.message}</p>;
     }
-  } else if (state.authKit && (state.authentication?.getTokens() || !props.authorize)) {
+  } else if (authKit.current && (state.authentication?.getTokens() || !authorizeOnMount)) {
     const AuthKitContext = getAuthKitContext();
-    return <AuthKitContext.Provider value={{ authKit: state.authKit, authentication: state.authentication }}>{children}</AuthKitContext.Provider>;
+    return <AuthKitContext.Provider value={{ authorize, authentication: state.authentication }}>{children}</AuthKitContext.Provider>;
   } else {
-    if (props.loadingNode) {
-      return <div>{props.loadingNode}</div>;
+    if (loadingNode) {
+      return <div>{loadingNode}</div>;
     } else {
       return <p>Loading...</p>;
     }
