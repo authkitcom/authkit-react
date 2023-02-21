@@ -1,15 +1,26 @@
 import {ITokens} from '@authkitcom/core';
-import {render, screen} from "@testing-library/react";
+import { render, screen} from "@testing-library/react";
 import * as React from 'react'
 import { AuthKitProvider } from '../AuthKitProvider'
 
-const mockCreateAuthKitForDom = jest.fn()
-jest.mock('@authkitcom/core', () => ({
-  createAuthKitForDOM: mockCreateAuthKitForDom
-}))
+
+const mockAuthentication = {
+  logout: jest.fn(() => {}),
+  getTokens: jest.fn(() => ({})),
+  isAuthenticated: jest.fn(() => {}),
+  getUserinfo: jest.fn(() => {})
+}
+const mockAuthKit = {
+  authorize: jest.fn(() => mockAuthentication),
+}
+jest.mock('@authkitcom/core', () => {
+  return {
+    createAuthKitForDOM: jest.fn(() => mockAuthKit)
+  }
+})
 
 const StubConsumer: React.FC = () => {
-  return (<p>test</p>)
+  return (<p data-testid="content">test</p>)
 }
 
 beforeEach(() => {
@@ -20,35 +31,32 @@ describe('<AuthKitProvider/>', () => {
 
   const issuer = 'test-issuer'
   const clientId = 'test-client-id'
+  const redirectUri = ''
   const scope = ['test-scope']
 
 
-  const mockAuthKit = {
-    authorize: jest.fn(),
-  }
-
-  beforeEach(async () => {
+  beforeEach( () => {
 
     const createParams = {
       clientId,
       issuer,
-      scope,
+      redirectUri
     }
 
     const tokens: ITokens = {
       expiresIn: 1000
     }
+    mockAuthentication.getTokens.mockReturnValue(tokens)
+    mockAuthKit.authorize.mockReturnValue(mockAuthentication)
 
-    mockCreateAuthKitForDom.mockImplementation(() => mockAuthKit).mockReturnValue(tokens)
 
-
-
-    render(<AuthKitProvider createParams={createParams} scope={[]}><StubConsumer /></AuthKitProvider>)
+    render(<AuthKitProvider createParams={createParams} scope={scope}
+                                            authorizeOnMount><StubConsumer/></AuthKitProvider>)
 
   })
 
   // TODO - Figure out how to test the actual authorize call
-  it('renders something', () => {
-    expect(screen.getByRole('p').textContent).toBe(('Loading...'));
+  it('renders something', async () => {
+    expect(await screen.getByTestId('content').textContent).toBe(('Loading...'));
   })
 })

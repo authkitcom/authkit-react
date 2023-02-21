@@ -103,7 +103,7 @@ export const AuthKitProvider = ({
     if (loadingNode) {
       return <div>{loadingNode}</div>;
     } else {
-      return <p>Loading...</p>;
+      return <p data-testid="content">Loading...</p>;
     }
   }
 };
