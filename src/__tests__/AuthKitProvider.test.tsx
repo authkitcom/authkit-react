@@ -1,14 +1,14 @@
 import {ITokens} from '@authkitcom/core';
-import { render, screen} from "@testing-library/react";
+import {render, screen} from "@testing-library/react";
 import * as React from 'react'
-import { AuthKitProvider } from '../AuthKitProvider'
+import {AuthKitProvider} from '../AuthKitProvider'
 
 
 const mockAuthentication = {
-  logout: jest.fn(() => {}),
-  getTokens: jest.fn(() => ({})),
-  isAuthenticated: jest.fn(() => {}),
-  getUserinfo: jest.fn(() => {})
+  logout: jest.fn(),
+  getTokens: jest.fn(),
+  isAuthenticated: jest.fn(),
+  getUserinfo: jest.fn()
 }
 const mockAuthKit = {
   authorize: jest.fn(() => mockAuthentication),
@@ -35,7 +35,7 @@ describe('<AuthKitProvider/>', () => {
   const scope = ['test-scope']
 
 
-  beforeEach( () => {
+  beforeEach(() => {
 
     const createParams = {
       clientId,
@@ -51,7 +51,7 @@ describe('<AuthKitProvider/>', () => {
 
 
     render(<AuthKitProvider createParams={createParams} scope={scope}
-                                            authorizeOnMount><StubConsumer/></AuthKitProvider>)
+                            authorizeOnMount><StubConsumer/></AuthKitProvider>)
 
   })
 
