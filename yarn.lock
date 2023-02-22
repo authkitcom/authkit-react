@@ -19,10 +19,10 @@
     jsonpointer "^5.0.0"
     leven "^3.1.0"
 
-"@authkitcom/core@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@authkitcom/core/-/core-1.0.2.tgz#93fe0437bc596d61cd21c065c1e9b33f15268079"
-  integrity sha512-XsYQ3buddSoyJPn1ZzHu4MGl610XZbCTqUY2DZJisiVNGdJ/qhPaX9ZTDiWqaCmj64ofgLsCEH+N2wGsi+B2LQ==
+"@authkitcom/core@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@authkitcom/core/-/core-1.0.5.tgz#a9669b269acb409fa39e58387b650f6f04352ecb"
+  integrity sha512-jNLsgcrcuTSRRdrM5ZRHomg78ASobbBa0duYcYzH7sjcACthdj7ozr3oRphM9Q9yhsXhUQnPk/QQTkWAa2eNnA==
   dependencies:
     "@types/crypto-js" "^3.1.43"
     "@types/randombytes" "^2.0.0"
