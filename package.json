@@ -1,6 +1,6 @@
 {
   "name": "@authkitcom/react",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "AuthKit React Component",
   "author": "btomasini",
   "license": "MIT",
@@ -29,7 +29,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@authkitcom/core": "^1.0.6",
+    "@authkitcom/core": "^1.0.7",
     "react-scripts": "5.0.0",
     "ts-invariant": "^0.10.3"
   },
