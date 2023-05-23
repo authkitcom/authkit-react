@@ -1,7 +1,7 @@
 import * as React from "react";
-import { getAuthKitContext } from './AuthKitContext';
-import {createAuthKitForDOM, IAuthentication, IAuthKit, IAuthorizeParams, ICreateParams} from "@authkitcom/core";
 import {useCallback} from "react";
+import {getAuthKitContext} from './AuthKitContext';
+import {createAuthKitForDOM, IAuthentication, IAuthKit, IAuthorizeParams, ICreateParams} from "@authkitcom/core";
 
 export interface IErrorProps {
   error: Error;
@@ -34,11 +34,16 @@ export const AuthKitProvider = ({
                                   children,
                                   errorNode,
                                   loadingNode,
-                                  scope}: IAuthKitProviderProps) => {
+                                  scope
+                                }: IAuthKitProviderProps) => {
 
   const authKit = React.useRef<IAuthKit | null>(null);
-  if(authKit.current === null) {
-    authKit.current = createAuthKitForDOM(createParams);
+  if (authKit.current === null) {
+    authKit.current = createAuthKitForDOM({
+      clientId: createParams.clientId,
+      redirectHandler: createParams.redirectHandler,
+      issuer: createParams.issuer
+    });
   }
 
   const [state, setState] = React.useState<IAuthKitState>({});
@@ -48,33 +53,28 @@ export const AuthKitProvider = ({
   const defaultAuthorizeParams: IAuthorizeParams = {
     scope,
     redirectUri,
-    mode: "redirect",
+    mode: authorizeOnMount ? "redirect" : "silent",
   };
 
-
-  const authorize = useCallback(async (params?: IAuthorizeParams): Promise<void> => {
+  const authorize = useCallback(async (params: IAuthorizeParams): Promise<void> => {
     try {
-      const resp = await authKit.current?.authorize(params ?? defaultAuthorizeParams)
-      if(resp) {
+      const resp = await authKit.current?.authorize(params)
+      if (resp) {
         setState((curState) => ({
           ...curState,
           authentication: resp,
         }));
       }
-    } catch(e) {
+    } catch (e) {
       setState({
         error: e,
       })
     }
-  }, [authKit.current, defaultAuthorizeParams]);
+  }, [authKit.current]);
 
   const loadSecure = useCallback(async () => {
     try {
-      const authorizeParams = defaultAuthorizeParams;
-      if(!authorizeOnMount) {
-        authorizeParams.mode = "silent";
-      }
-      await authorize(authorizeParams);
+      await authorize(defaultAuthorizeParams);
     } catch (e) {
       setState({
         error: e,
@@ -83,7 +83,7 @@ export const AuthKitProvider = ({
   }, [authorize]);
 
   React.useEffect(() => {
-    if(authKit.current) {
+    if (authKit.current) {
       (async () => {
         await loadSecure();
       })();
@@ -98,7 +98,8 @@ export const AuthKitProvider = ({
     }
   } else if (authKit.current && (state.authentication?.getTokens() || !authorizeOnMount)) {
     const AuthKitContext = getAuthKitContext();
-    return <AuthKitContext.Provider value={{ authorize, authentication: state.authentication }}>{children}</AuthKitContext.Provider>;
+    return <AuthKitContext.Provider
+      value={{authorize, authentication: state.authentication}}>{children}</AuthKitContext.Provider>;
   } else {
     if (loadingNode) {
       return <div>{loadingNode}</div>;
